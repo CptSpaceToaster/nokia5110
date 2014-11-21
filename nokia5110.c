@@ -21,9 +21,9 @@
 unsigned char char_start;
 
 /* current cursor */
-volatile static unsigned int cursor_row = 0;
-volatile static unsigned int cursor_col = 0;
-static unsigned char lcd_buffer[HEIGHT/8][WIDTH];
+uint16_t cursor_row = 0;
+uint16_t cursor_col = 0;
+
 
 void nokia5110_spi_init(uint8_t reg) {
 	//SPI initialize
@@ -50,11 +50,26 @@ void nokia5110_power_on(void) {
 }
 
 void nokia5110_writeData(uint8_t data) {
-	CLEAR_SCE_PIN;            // enable LCD
-	SET_DC_PIN;               // set LCD in Data mode
-	SPDR = Data;              // send data to display controller.
-	while ( !(SPSR & 0x80) ); // wait until Tx register empty.
-	SET_SCE_PIN;              // disable LCD
+	static uint8_t lcd_buffer[HEIGHT/8][WIDTH]; // may need to go
+	
+	/* Only clock out the data if it differs from the buffer */
+	if (lcd_buffer[cursor_row][cursor_col] != data) {
+		CLEAR_SCE_PIN;            // enable LCD
+		SET_DC_PIN;               // set LCD in Data mode
+		SPDR = Data;              // send data to display controller.
+		while ( !(SPSR & 0x80) ); // wait until Tx register empty.
+		SET_SCE_PIN;              // disable LCD
+	}
+	
+	//increment the cursors
+	cursor_col++;
+	if (cursor_col >= WIDTH) {
+		cursor_col -= WIDTH;
+		cursor_row++;
+	}
+	if (cursor_row >= HEIGHT) {
+		cursor_row -= HEIGHT;
+	}
 }
 
 void nokia5110_writeCommand(uint8_t command) {
@@ -74,7 +89,15 @@ void nokia5110_gotoXY(uint8_t column, uint8_t row) {
 }
 
 void nokia5110_clear(void) {
+	int i,j;
 	
+	nokia5110_gotoXY(0,0);
+
+	for(i=0; i<(HEIGHT/8); i++) {
+		for(j=0; j<WIDTH; j++) {
+			nokia5110_writeData(0x00);
+		}
+	}
 }
 
 
