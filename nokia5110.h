@@ -34,6 +34,8 @@ void nokia5110_gotoXY(uint8_t column, uint8_t row);
 void nokia5110_clear(void);
 void nokia5110_drawSplash(void);
 void nokia5110_writeChar(char ch);
+void nokia5110_write_char_beginning(char ch, uint8_t width);
+void nokia5110_write_char_end(char ch, uint8_t width);
 void nokia5110_writeString(const char *string);
 void nokia5110_writeString_C(const char *string);
 void nokia5110_writeString_L(const char *string, uint8_t px_offset);
