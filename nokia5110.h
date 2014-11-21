@@ -36,6 +36,7 @@ void nokia5110_drawSplash(void);
 void nokia5110_writeChar(char ch);
 void nokia5110_writeString(const char *string);
 void nokia5110_writeString_C(const char *string);
+void nokia5110_writeString_L(const char *string, uint8_t px_offset);
 
 #ifdef NOKIA4117_USING_LARGE_FONT
 void nokia5110_writeChar_megaFont(char ch);

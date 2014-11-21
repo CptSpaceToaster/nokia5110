@@ -187,6 +187,18 @@ void nokia5110_writeString_C(const char *string) {
 	}
 }
 
+/* Cuts off the string at 12 characters */
+void nokia5110_writeString_L(const char *string, uint8_t px_offset) {
+	
+	nokia5110_write_char_end(*string++, px_offset);
+	int i = 0;
+	while (*string && i < 11) {
+		i ++;
+		nokia5110_writeChar(*string++);
+	}
+	nokia5110_write_char_beginning(*string++, 7-px_offset);
+}
+
 
 #ifdef NOKIA4117_USING_LARGE_FONT
 void nokia5110_writeChar_megaFont(char character) {
