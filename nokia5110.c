@@ -25,14 +25,14 @@ volatile static unsigned int cursor_row = 0;
 volatile static unsigned int cursor_col = 0;
 static unsigned char lcd_buffer[HEIGHT/8][WIDTH];
 
-void nokia5110_spi_init( unsigned char reg ) {
+void nokia5110_spi_init(uint8_t reg) {
 	//SPI initialize
 	//clock rate: 250000hz
 	DDRLCD |= _BV(LCD_DC_PIN) | _BV(LCD_CE_PIN) | _BV(SPI_MOSI_PIN) | _BV(LCD_RST_PIN) | _BV(SPI_CLK_PIN);
 	SPCR = reg; //setup SPI with a given register value... read the data sheet to see what you can do!
 }
 
-void nokia5110_power_on ( void ) {
+void nokia5110_power_on(void) {
 	CLEAR_SCE_PIN;  // lowering the select pin
 	CLEAR_RST_PIN;  // lowering reset (initiating the reset procedure)
 	_delay_ms(100); // waiting a bit for things to settle
@@ -49,7 +49,7 @@ void nokia5110_power_on ( void ) {
 	nokia5110_clear();
 }
 
-void nokia5110_writeData ( unsigned char data ) {
+void nokia5110_writeData(uint8_t data) {
 	CLEAR_SCE_PIN;            // enable LCD
 	SET_DC_PIN;               // set LCD in Data mode
 	SPDR = Data;              // send data to display controller.
@@ -57,7 +57,7 @@ void nokia5110_writeData ( unsigned char data ) {
 	SET_SCE_PIN;              // disable LCD
 }
 
-void nokia5110_writeCommand ( unsigned char command ) {
+void nokia5110_writeCommand(uint8_t command) {
 	CLEAR_SCE_PIN;	          // enable LCD
 	CLEAR_DC_PIN;             // set LCD in command mode
 	SPDR = command;           // send data to display controller.
@@ -65,7 +65,7 @@ void nokia5110_writeCommand ( unsigned char command ) {
 	SET_SCE_PIN;              // disable LCD
 }
 
-void nokia5110_gotoXY ( unsigned char column, unsigned char row ) {
+void nokia5110_gotoXY(uint8_t column, uint8_t row) {
 	nokia5110_writeCommand(0x80 | column);
 	nokia5110_writeCommand(0x40 | row);
 
@@ -73,30 +73,30 @@ void nokia5110_gotoXY ( unsigned char column, unsigned char row ) {
 	cursor_row = row;
 }
 
-void nokia5110_clear ( void ) {
+void nokia5110_clear(void) {
 	
 }
 
 
-void nokia5110_writeChar ( unsigned char character ) {
+void nokia5110_writeChar(char character) {
 	
 }
 
-void nokia5110_drawSplash (void ) {
+void nokia5110_drawSplash(void) {
 	
 }
 
-void nokia5110_writeString_F ( const char *string) {
+void nokia5110_writeString_F(const char *string) {
 	
 }
 
 
 #ifdef NOKIA4117_USING_LARGE_FONT
-void nokia5110_writeChar_megaFont ( unsigned char character ) {
+void nokia5110_writeChar_megaFont(char character) {
 	
 }
 
-void nokia5110_writeString_megaFont ( char *string ) {
+void nokia5110_writeString_megaFont(const char *string) {
 	
 }
 #endif

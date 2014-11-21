@@ -26,20 +26,20 @@
 #define SET_RST_PIN                PORTLCD |= _BV(LCD_RST_PIN)
 #define CLEAR_RST_PIN              PORTLCD &= ~_BV(LCD_RST_PIN)
 
-void nokia5110_spi_init( unsigned char reg );
-void nokia5110_power_on ( void );
-void nokia5110_writeData ( unsigned char data );
-void nokia5110_writeCommand ( unsigned char command );
-void nokia5110_gotoXY ( unsigned char x, unsigned char y );
-void nokia5110_clear ( void );
+void nokia5110_spi_init(uint8_t reg);
+void nokia5110_power_on(void);
+void nokia5110_writeData(uint8_t data);
+void nokia5110_writeCommand(uint8_t command);
+void nokia5110_gotoXY(uint8_t x, uint8_t y);
+void nokia5110_clear(void);
 
-void nokia5110_writeChar ( unsigned char character );
-void nokia5110_drawSplash (void );
-void nokia5110_writeString_F ( const char *string);
+void nokia5110_writeChar(char character);
+void nokia5110_drawSplash(void);
+void nokia5110_writeString_F(const char *string);
 
 #ifdef NOKIA4117_USING_LARGE_FONT
-void nokia5110_writeChar_megaFont ( unsigned char character );
-void nokia5110_writeString_megaFont ( char *string );
+void nokia5110_writeChar_megaFont(char character);
+void nokia5110_writeString_megaFont(const char *string);
 #endif
 
 #endif  //NOKIA_5110_H_
