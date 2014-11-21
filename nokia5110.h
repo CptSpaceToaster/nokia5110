@@ -32,9 +32,8 @@ void nokia5110_writeData(uint8_t data);
 void nokia5110_writeCommand(uint8_t command);
 void nokia5110_gotoXY(uint8_t x, uint8_t y);
 void nokia5110_clear(void);
-
-void nokia5110_writeChar(char character);
 void nokia5110_drawSplash(void);
+void nokia5110_writeChar(char character);
 void nokia5110_writeString_F(const char *string);
 
 #ifdef NOKIA4117_USING_LARGE_FONT

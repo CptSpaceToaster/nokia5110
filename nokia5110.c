@@ -24,7 +24,6 @@ unsigned char char_start;
 uint16_t cursor_row = 0;
 uint16_t cursor_col = 0;
 
-
 void nokia5110_spi_init(uint8_t reg) {
 	//SPI initialize
 	//clock rate: 250000hz
@@ -100,12 +99,19 @@ void nokia5110_clear(void) {
 	}
 }
 
-
-void nokia5110_writeChar(char character) {
+void nokia5110_drawSplash(void) {
+	int i,j;
 	
+	nokia5110_gotoXY(0,0);
+	
+	for(i=0; i<(HEIGHT/8); i++) {
+		for(j=0; j<WIDTH; j++) {
+			nokia5110_writeData(pgm_read_byte(&(splash[i*WIDTH+j]));
+		}
+	}
 }
 
-void nokia5110_drawSplash(void) {
+void nokia5110_writeChar(char character) {
 	
 }
 
