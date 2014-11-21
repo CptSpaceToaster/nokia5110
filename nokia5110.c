@@ -24,6 +24,9 @@ bool is_init = false;
 /* current cursor */
 uint16_t cursor_row = 0;
 uint16_t cursor_col = 0;
+/* These represent where the cursor is on the LCD... not where we think we are */
+uint16_t dirty_cursor_row = 0;
+uint16_t dirty_cursor_col = 0;
 
 void nokia5110_spi_init(uint8_t reg) {
 	//SPI initialize
@@ -81,6 +84,11 @@ void nokia5110_writeData(uint8_t data) {
 	if (cursor_row >= HEIGHT) {
 		cursor_row -= HEIGHT;
 	}
+	
+	if (!cursor_is_dirty) {
+		dirty_cursor_col = cursor_col;
+		dirty_cursor_row = cursor_row;
+	}
 }
 
 void nokia5110_writeCommand(uint8_t command) {
@@ -92,11 +100,15 @@ void nokia5110_writeCommand(uint8_t command) {
 }
 
 void nokia5110_gotoXY(uint8_t column, uint8_t row) {
-	nokia5110_writeCommand(0x80 | column);
-	nokia5110_writeCommand(0x40 | row);
+	if (dirty_cursor_col != column) {
+		nokia5110_writeCommand(0x80 | column);
+	}
+	if (dirty_cursor_row != row) {
+		nokia5110_writeCommand(0x40 | row);
+	}
 
-	cursor_col = column;
-	cursor_row = row;
+	cursor_col = dirty_cursor_col = column;
+	cursor_row = dirty_cursor_row = row;
 }
 
 void nokia5110_clear(void) {
