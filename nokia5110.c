@@ -26,7 +26,10 @@ volatile static unsigned int cursor_col = 0;
 static unsigned char lcd_buffer[HEIGHT/8][WIDTH];
 
 void nokia5110_spi_init( unsigned char reg ) {
-	
+	//SPI initialize
+	//clock rate: 250000hz
+	DDRLCD |= _BV(LCD_DC_PIN) | _BV(LCD_CE_PIN) | _BV(SPI_MOSI_PIN) | _BV(LCD_RST_PIN) | _BV(SPI_CLK_PIN);
+	SPCR = reg; //setup SPI with a given register value... read the data sheet to see what you can do!
 }
 
 void nokia5110_init ( void ) {
