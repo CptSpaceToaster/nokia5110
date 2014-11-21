@@ -33,7 +33,22 @@ void nokia5110_spi_init( unsigned char reg ) {
 }
 
 void nokia5110_init ( void ) {
+	CLEAR_SCE_PIN;    //Enable LCD
+
+	CLEAR_RST_PIN;
+	_delay_ms(100);
+	SET_RST_PIN;	//reset LCD
 	
+	SET_SCE_PIN;	//disable LCD
+
+	nokia5110_writeCommand( 0x21 );  // LCD Extended Commands.
+	nokia5110_writeCommand( 0xD0 );  // Set LCD Vop (Contrast).
+	nokia5110_writeCommand( 0x04 );  // Set Temp coefficent.
+	nokia5110_writeCommand( 0x13 );  // LCD bias mode 1:48.
+	nokia5110_writeCommand( 0x20 );  // LCD Standard Commands, Horizontal addressing mode.
+	nokia5110_writeCommand( 0x0c );  // LCD in normal mode.
+
+	nokia5110_clear();
 }
 
 void nokia5110_writeData ( unsigned char data ) {
