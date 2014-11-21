@@ -25,11 +25,11 @@ volatile static unsigned int cursor_row = 0;
 volatile static unsigned int cursor_col = 0;
 static unsigned char lcd_buffer[HEIGHT/8][WIDTH];
 
-void nokia5110_init ( void ) {
+void nokia5110_spi_init( unsigned char reg ) {
 	
 }
 
-void nokia5110_spi_init( unsigned char reg ) {
+void nokia5110_init ( void ) {
 	
 }
 
