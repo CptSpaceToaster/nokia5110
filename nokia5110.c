@@ -65,8 +65,12 @@ void nokia5110_writeCommand ( unsigned char command ) {
 	SET_SCE_PIN;              // disable LCD
 }
 
-void nokia5110_gotoXY ( unsigned char x, unsigned char y ) {
-	
+void nokia5110_gotoXY ( unsigned char column, unsigned char row ) {
+	nokia5110_writeCommand(0x80 | column);
+	nokia5110_writeCommand(0x40 | row);
+
+	cursor_col = column;
+	cursor_row = row;
 }
 
 void nokia5110_clear ( void ) {

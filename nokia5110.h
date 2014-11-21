@@ -27,7 +27,7 @@
 #define CLEAR_RST_PIN              PORTLCD &= ~_BV(LCD_RST_PIN)
 
 void nokia5110_spi_init( unsigned char reg );
-void nokia5110_init ( void );
+void nokia5110_power_on ( void );
 void nokia5110_writeData ( unsigned char data );
 void nokia5110_writeCommand ( unsigned char command );
 void nokia5110_gotoXY ( unsigned char x, unsigned char y );
