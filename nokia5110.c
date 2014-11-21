@@ -18,10 +18,8 @@
 #  error "define HEIGHT before nokia5110.c"
 #endif
 
-//global variable for remembering where to start writing the next text string on 3310 LCD
-unsigned char char_start;
-uint8_t lcd_buffer[HEIGHT/8][WIDTH]; // may need to go
-bool cursor_is_dirty = false;
+//Should be true if initializing.  This is not yours to mess with...
+bool is_init = false;
 
 /* current cursor */
 uint16_t cursor_row = 0;
@@ -35,6 +33,7 @@ void nokia5110_spi_init(uint8_t reg) {
 }
 
 void nokia5110_power_on(void) {
+	is_init = true;
 	CLEAR_SCE_PIN;  // lowering the select pin
 	CLEAR_RST_PIN;  // lowering reset (initiating the reset procedure)
 	_delay_ms(100); // waiting a bit for things to settle
@@ -47,20 +46,22 @@ void nokia5110_power_on(void) {
 	nokia5110_writeCommand( 0x13 );  // LCD bias mode 1:48.
 	nokia5110_writeCommand( 0x20 );  // LCD Standard Commands, Horizontal addressing mode.
 	nokia5110_writeCommand( 0x0c );  // LCD in normal mode.
-
+	
 	nokia5110_clear();
+	is_init = false;
 }
 
 void nokia5110_writeData(uint8_t data) {
-	
-	
-	/* Move the cursor if we DIDN'T do that earlier */
-	if (cursor_is_dirty) {
-		nokia5110_gotoXY(cursor_col, cursor_row);
-		cursor_is_dirty = false;
-	}
+	static uint8_t lcd_buffer[HEIGHT/8][WIDTH]; // may need to go
+	static bool cursor_is_dirty = false;
+
 	/* Only clock out the data if it differs from the buffer */
-	if (lcd_buffer[cursor_row][cursor_col] != data) {
+	if (lcd_buffer[cursor_row][cursor_col] != data || is_init) {
+		/* Move the cursor if we DIDN'T do that earlier */
+		if (cursor_is_dirty) {
+			nokia5110_gotoXY(cursor_col, cursor_row);
+			cursor_is_dirty = false;
+		}
 		lcd_buffer[cursor_row][cursor_col] = data;
 		CLEAR_SCE_PIN;            // enable LCD
 		SET_DC_PIN;               // set LCD in Data mode
