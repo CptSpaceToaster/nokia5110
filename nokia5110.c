@@ -55,7 +55,7 @@ void nokia5110_writeData(uint8_t data) {
 	if (lcd_buffer[cursor_row][cursor_col] != data) {
 		CLEAR_SCE_PIN;            // enable LCD
 		SET_DC_PIN;               // set LCD in Data mode
-		SPDR = Data;              // send data to display controller.
+		SPDR = data;              // send data to display controller.
 		while ( !(SPSR & 0x80) ); // wait until Tx register empty.
 		SET_SCE_PIN;              // disable LCD
 	}
@@ -106,17 +106,26 @@ void nokia5110_drawSplash(void) {
 	
 	for(i=0; i<(HEIGHT/8); i++) {
 		for(j=0; j<WIDTH; j++) {
-			nokia5110_writeData(pgm_read_byte(&(splash[i*WIDTH+j]));
+			nokia5110_writeData(pgm_read_byte(&(splash[i*WIDTH+j])));
 		}
 	}
 }
 
-void nokia5110_writeChar(char character) {
+void nokia5110_writeChar(char ch) {
+	nokia5110_writeData(0x00);
 	
+	uint8_t j;
+	for(j=0; j<5; j++) {
+		nokia5110_writeData(pgm_read_byte(&(smallFont [(ch-32)*5 + j] )));
+	}
+
+	nokia5110_writeData(0x00);
 }
 
-void nokia5110_writeString_F(const char *string) {
-	
+void nokia5110_writeString(const char *string) {
+	while (*string) {
+		nokia5110_writeChar( *string++ );
+	}
 }
 
 
