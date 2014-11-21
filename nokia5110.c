@@ -192,7 +192,7 @@ void nokia5110_writeString_C(const char *string) {
 	}
 }
 
-/* Cuts off the string at 12 characters */
+/* Writes a line basically... and allows for partial characters to be printed... handy for smooth scrolling text */
 void nokia5110_writeString_L(const char *string, uint8_t px_offset) {
 	
 	nokia5110_write_char_end(*string++, 7-px_offset);
