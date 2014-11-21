@@ -33,13 +33,11 @@ void nokia5110_spi_init( unsigned char reg ) {
 }
 
 void nokia5110_power_on ( void ) {
-	CLEAR_SCE_PIN;    //Enable LCD
-
-	CLEAR_RST_PIN;
-	_delay_ms(100);
-	SET_RST_PIN;	//reset LCD
-	
-	SET_SCE_PIN;	//disable LCD
+	CLEAR_SCE_PIN;  // lowering the select pin
+	CLEAR_RST_PIN;  // lowering reset (initiating the reset procedure)
+	_delay_ms(100); // waiting a bit for things to settle
+	SET_RST_PIN;	// raising reset (taking the device OUT of reset)
+	SET_SCE_PIN;	// setting the select pin high, ending the reset procedure... SPI should work now.
 
 	nokia5110_writeCommand( 0x21 );  // LCD Extended Commands.
 	nokia5110_writeCommand( 0xD0 );  // Set LCD Vop (Contrast).
@@ -52,11 +50,19 @@ void nokia5110_power_on ( void ) {
 }
 
 void nokia5110_writeData ( unsigned char data ) {
-	
+	CLEAR_SCE_PIN;            // enable LCD
+	SET_DC_PIN;               // set LCD in Data mode
+	SPDR = Data;              // send data to display controller.
+	while ( !(SPSR & 0x80) ); // wait until Tx register empty.
+	SET_SCE_PIN;              // disable LCD
 }
 
 void nokia5110_writeCommand ( unsigned char command ) {
-	
+	CLEAR_SCE_PIN;	          // enable LCD
+	CLEAR_DC_PIN;             // set LCD in command mode
+	SPDR = command;           // send data to display controller.
+	while (!(SPSR & 0x80));   // wait until Tx register empty.
+	SET_SCE_PIN;              // disable LCD
 }
 
 void nokia5110_gotoXY ( unsigned char x, unsigned char y ) {
