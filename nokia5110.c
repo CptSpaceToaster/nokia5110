@@ -32,7 +32,7 @@ void nokia5110_spi_init( unsigned char reg ) {
 	SPCR = reg; //setup SPI with a given register value... read the data sheet to see what you can do!
 }
 
-void nokia5110_init ( void ) {
+void nokia5110_power_on ( void ) {
 	CLEAR_SCE_PIN;    //Enable LCD
 
 	CLEAR_RST_PIN;
