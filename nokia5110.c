@@ -163,8 +163,6 @@ void nokia5110_write_char_end(char ch, uint8_t width) {
 	for(j=0; j<5; j++) {
 		if (width >= 6-j) {
 			nokia5110_writeData(pgm_read_byte(&(smallFont [(ch-32)*5 + j] )));
-		} else {
-			break;
 		}
 	}
 	if (width >= 1) {
@@ -190,13 +188,15 @@ void nokia5110_writeString_C(const char *string) {
 /* Cuts off the string at 12 characters */
 void nokia5110_writeString_L(const char *string, uint8_t px_offset) {
 	
-	nokia5110_write_char_end(*string++, px_offset);
+	nokia5110_write_char_end(*string++, 7-px_offset);
 	int i = 0;
 	while (*string && i < 11) {
 		i ++;
 		nokia5110_writeChar(*string++);
 	}
-	nokia5110_write_char_beginning(*string++, 7-px_offset);
+	if (*string) {
+		nokia5110_write_char_beginning(*string++, px_offset);
+	}
 }
 
 
