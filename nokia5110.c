@@ -102,10 +102,10 @@ void nokia5110_writeCommand(uint8_t command) {
 }
 
 void nokia5110_gotoXY(uint8_t column, uint8_t row) {
-	if (dirty_cursor_col != column) {
+	if (dirty_cursor_col != column && column < WIDTH) {
 		nokia5110_writeCommand(0x80 | column);
 	}
-	if (dirty_cursor_row != row) {
+	if (dirty_cursor_row != row && row < HEIGHT) {
 		nokia5110_writeCommand(0x40 | row);
 	}
 
@@ -208,11 +208,36 @@ void nokia5110_writeString_L(const char *string, uint8_t px_offset) {
 
 
 #ifdef NOKIA4117_USING_LARGE_FONT
-void nokia5110_writeChar_megaFont(char character) {
+void nokia5110_writeChar_megaFont(char ch) {
+	switch(ch) {
+		case '.': ch = 10; break;
+		case '+': ch = 11; break;
+		case '-': ch = 12; break;
+		case ':': ch = 13; break;
+		default:  ch &= 0x0f; break;
+	}
 	
+	// Prints a Large character in three horizontal passes
+	for(i=0;i<3;i++)
+	{
+		nokia5110_gotoXY(cursor_col, cursor_row+i);
+		
+		for(j=0; j<16; j++) {
+			nokia5110_writeData(pgm_read_byte(&(number[(uint8_t)ch][i][j])));
+		}
+		cursor_col -= 16; // Think of this as the return on a typewriter
+	}
+	//Move the cursor to the next position to facilitate the writing of another mega-character
+	if (ch == '.' || ch == ':') {
+		nokia5110_gotoXY(cursor_col+5, cursor_row-3); // periods and colons should be narrower
+	} else {
+		nokia5110_gotoXY(cursor_col+16, cursor_row-3);
+	}
 }
 
 void nokia5110_writeString_megaFont(const char *string) {
-	
+	while (*string) {
+		nokia5110_writeChar_megaFont(*string++);
+	}
 }
 #endif
