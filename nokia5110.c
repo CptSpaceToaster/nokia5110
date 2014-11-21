@@ -136,7 +136,16 @@ void nokia5110_writeChar(char ch) {
 
 void nokia5110_writeString(const char *string) {
 	while (*string) {
-		nokia5110_writeChar( *string++ );
+		nokia5110_writeChar(*string++);
+	}
+}
+
+/* Cuts off the string at 12 characters */
+void nokia5110_writeString_C(const char *string) {
+	int i = 0;
+	while (*string && i < 12) {
+		i ++;
+		nokia5110_writeChar(*string++);
 	}
 }
 
