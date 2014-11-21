@@ -4,8 +4,9 @@
  * Created: 11/20/2014 8:15:16 PM
  * Author: CaptainSpaceToaster
  */ 
-#include <avr/io.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <avr/io.h>
 #include <util/delay.h>
 #include "nokia5110.h"
 #include "screen.h"
@@ -50,7 +51,13 @@ void nokia5110_power_on(void) {
 
 void nokia5110_writeData(uint8_t data) {
 	static uint8_t lcd_buffer[HEIGHT/8][WIDTH]; // may need to go
+	static bool cursor_is_dirty = false;
 	
+	/* Move the cursor if we DIDN'T do that earlier */
+	if (cursor_is_dirty) {
+		nokia5110_gotoXY(cursor_col, cursor_row);
+		cursor_is_dirty = false;
+	}
 	/* Only clock out the data if it differs from the buffer */
 	if (lcd_buffer[cursor_row][cursor_col] != data) {
 		CLEAR_SCE_PIN;            // enable LCD
@@ -58,6 +65,8 @@ void nokia5110_writeData(uint8_t data) {
 		SPDR = data;              // send data to display controller.
 		while ( !(SPSR & 0x80) ); // wait until Tx register empty.
 		SET_SCE_PIN;              // disable LCD
+	} else {
+		cursor_is_dirty = true;
 	}
 	
 	//increment the cursors
