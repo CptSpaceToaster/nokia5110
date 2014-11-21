@@ -134,6 +134,44 @@ void nokia5110_writeChar(char ch) {
 	nokia5110_writeData(0x00);
 }
 
+/* Starts writing a character, but cuts out early... unless you wanted width>=7... then you're just being weird */
+void nokia5110_write_char_beginning(char ch, uint8_t width) {
+	if (width > 0) {
+		nokia5110_writeData(0x00);
+	}
+	
+	uint8_t j;
+	for(j=0; j<5; j++) {
+		if (width > 1+j) {
+			nokia5110_writeData(pgm_read_byte(&(smallFont [(ch-32)*5 + j] )));
+		} else {
+			break;
+		}
+	}
+	if (width > 6) {
+		nokia5110_writeData(0x00);
+	}
+}
+
+/* Starts writing a character from it's middle, and continues to the end... unless you wanted width>=7... then you're just being weird */
+void nokia5110_write_char_end(char ch, uint8_t width) {
+	if (width >= 7) {
+		nokia5110_writeData(0x00);
+	}
+	
+	uint8_t j;
+	for(j=0; j<5; j++) {
+		if (width >= 6-j) {
+			nokia5110_writeData(pgm_read_byte(&(smallFont [(ch-32)*5 + j] )));
+		} else {
+			break;
+		}
+	}
+	if (width >= 1) {
+		nokia5110_writeData(0x00);
+	}
+}
+
 void nokia5110_writeString(const char *string) {
 	while (*string) {
 		nokia5110_writeChar(*string++);
