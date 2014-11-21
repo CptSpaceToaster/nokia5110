@@ -220,18 +220,18 @@ void nokia5110_writeChar_megaFont(char ch) {
 	// Prints a Large character in three horizontal passes
 	for(i=0;i<3;i++)
 	{
-		nokia5110_gotoXY(cursor_col, cursor_row+i);
-		
-		for(j=0; j<16; j++) {
+		for(j=0; j<12; j++) {
 			nokia5110_writeData(pgm_read_byte(&(number[(uint8_t)ch][i][j])));
 		}
-		cursor_col -= 16; // Think of this as the return on a typewriter
+		if (i<3) {
+			nokia5110_gotoXY(cursor_col-12, cursor_row+1); // Think of this as the return on a typewriter
+		}
 	}
 	//Move the cursor to the next position to facilitate the writing of another mega-character
-	if (ch == '.' || ch == ':') {
-		nokia5110_gotoXY(cursor_col+5, cursor_row-3); // periods and colons should be narrower
+	if (ch == 10 || ch == 13) {
+		nokia5110_gotoXY(cursor_col+8, cursor_row-3); // periods and colons should be narrower
 	} else {
-		nokia5110_gotoXY(cursor_col+16, cursor_row-3);
+		nokia5110_gotoXY(cursor_col+12, cursor_row-3);
 	}
 }
 
