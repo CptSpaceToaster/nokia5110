@@ -27,6 +27,8 @@ uint16_t cursor_col = 0;
 /* These represent where the cursor is on the LCD... not where we think we are */
 uint16_t dirty_cursor_row = 0;
 uint16_t dirty_cursor_col = 0;
+/* Index variables... declared once here, and used by various methods */
+uint8_t i, j;
 
 void nokia5110_spi_init(uint8_t reg) {
 	//SPI initialize
@@ -112,8 +114,6 @@ void nokia5110_gotoXY(uint8_t column, uint8_t row) {
 }
 
 void nokia5110_clear(void) {
-	int i,j;
-	
 	nokia5110_gotoXY(0,0);
 
 	for(i=0; i<(HEIGHT/8); i++) {
@@ -124,8 +124,6 @@ void nokia5110_clear(void) {
 }
 
 void nokia5110_drawSplash(void) {
-	int i,j;
-	
 	nokia5110_gotoXY(0,0);
 	
 	for(i=0; i<(HEIGHT/8); i++) {
@@ -138,7 +136,6 @@ void nokia5110_drawSplash(void) {
 void nokia5110_writeChar(char ch) {
 	nokia5110_writeData(0x00);
 	
-	uint8_t j;
 	for(j=0; j<5; j++) {
 		nokia5110_writeData(pgm_read_byte(&(smallFont [(ch-32)*5 + j] )));
 	}
@@ -152,7 +149,6 @@ void nokia5110_write_char_beginning(char ch, uint8_t width) {
 		nokia5110_writeData(0x00);
 	}
 	
-	uint8_t j;
 	for(j=0; j<5; j++) {
 		if (width > 1+j) {
 			nokia5110_writeData(pgm_read_byte(&(smallFont [(ch-32)*5 + j] )));
@@ -171,7 +167,6 @@ void nokia5110_write_char_end(char ch, uint8_t width) {
 		nokia5110_writeData(0x00);
 	}
 	
-	uint8_t j;
 	for(j=0; j<5; j++) {
 		if (width >= 6-j) {
 			nokia5110_writeData(pgm_read_byte(&(smallFont [(ch-32)*5 + j] )));
@@ -190,7 +185,7 @@ void nokia5110_writeString(const char *string) {
 
 /* Cuts off the string at 12 characters */
 void nokia5110_writeString_C(const char *string) {
-	int i = 0;
+	i = 0;
 	while (*string && i < 12) {
 		i ++;
 		nokia5110_writeChar(*string++);
@@ -201,7 +196,7 @@ void nokia5110_writeString_C(const char *string) {
 void nokia5110_writeString_L(const char *string, uint8_t px_offset) {
 	
 	nokia5110_write_char_end(*string++, 7-px_offset);
-	int i = 0;
+	i = 0;
 	while (*string && i < 11) {
 		i ++;
 		nokia5110_writeChar(*string++);
