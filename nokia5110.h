@@ -4,10 +4,9 @@
  * Created: 11/20/2014 8:15:16 PM
  * Author: CaptainSpaceToaster
  */ 
-#ifndef _3310_ROUTINES_H_
-#define _3310_ROUTINES_H_
-
-#include <avr/pgmspace.h>
+#ifndef _NOKIA_5110_H_
+#define _NOKIA_5110_H_
+#define NOKIA4117_USING_LARGE_FONT // comment out to save space, and remove large font functionality
 
 /* Alias to point to the register that implements SPI */
 #define DDRLCD                     DDRB
@@ -26,35 +25,21 @@
 #define CLEAR_SCE_PIN              PORTLCD &= ~_BV(LCD_CE_PIN)
 #define SET_RST_PIN                PORTLCD |= _BV(LCD_RST_PIN)
 #define CLEAR_RST_PIN              PORTLCD &= ~_BV(LCD_RST_PIN)
- 
-#define NOKIA4117_USING_LARGE_FONT // comment out to save space, and remove large font functionality
 
-void LCD_init ( void );
-void LCD_clear ( void );
-void LCD_update ( void );
-void LCD_gotoXY ( unsigned char x, unsigned char y );
-void LCD_writeChar ( unsigned char character );
-void LCD_writeChar_P ( unsigned char character );
-void LCD_writeChar_L ( unsigned char character );
-void LCD_writeChar_C ( unsigned char character );
-void LCD_writeChar_megaFont ( unsigned char character );
-void LCD_writeData ( unsigned char data );
-void LCD_writeCommand ( unsigned char command );
+void nokia5110_init ( void );
+void nokia5110_spi_init( unsigned char reg );
+void nokia5110_writeData ( unsigned char data );
+void nokia5110_writeCommand ( unsigned char command );
+void nokia5110_gotoXY ( unsigned char x, unsigned char y );
+void nokia5110_clear ( void );
+
+void nokia5110_writeChar ( unsigned char character );
+void nokia5110_drawSplash (void );
+void nokia5110_writeString_F ( const char *string);
+
 #ifdef NOKIA4117_USING_LARGE_FONT
-void LCD_writeString_megaFont ( char *string );
+void nokia5110_writeChar_megaFont ( unsigned char character );
+void nokia5110_writeString_megaFont ( char *string );
 #endif
-void LCD_writeString_C ( const char *string);
-void LCD_writeString_L ( const char *string);
-void LCD_writeString_F ( const char *string);
-void LCD_setPixel ( unsigned char x, unsigned char y);
-void LCD_clearPixel ( unsigned char x, unsigned char y);
-void LCD_setPixelNoUpdate ( unsigned char x, unsigned char y);
-void LCD_clearPixelNoUpdate ( unsigned char x, unsigned char y);
-void LCD_drawLine ( unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2 );
-void LCD_drawBorder (void );
-void LCD_drawSplash (void );
-void LCD_drawSplashNoUpdate (void );
-void delay_ms ( int millisec );
-void spi_init( unsigned char reg );
 
-#endif  //  _3310_ROUTINES_H_
+#endif  //NOKIA_5110_H_
