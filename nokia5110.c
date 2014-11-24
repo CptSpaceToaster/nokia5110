@@ -214,6 +214,7 @@ void nokia5110_writeChar_megaFont(char ch) {
 		case '+': ch = 11; break;
 		case '-': ch = 12; break;
 		case ':': ch = 13; break;
+		case ' ': ch = 14; break;
 		default:  ch &= 0x0f; break;
 	}
 	
